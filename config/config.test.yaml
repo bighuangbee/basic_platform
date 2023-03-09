@@ -1,0 +1,48 @@
+name: mozi-basic-platform
+version: v1.0
+env: dev
+
+# 注册发现地址
+discovery:
+  ipAddr: 192.168.18.66
+  port: 8848
+  timeout: 5
+  onOff: false
+
+trace:
+  endpoint: http://jaeger-collector.tracing-system:14268/api/traces
+  fraction: 1 # trace记录频率 0:不记录 0.5:50%概率记录 1:每个请求的记录
+
+metrics:
+  addr: 0.0.0.0:6060
+
+server:
+  http:
+    addr: 0.0.0.0:8601
+    timeout: 10
+  grpc:
+    addr: 0.0.0.0:8501
+    timeout: 10
+  nodeId: 0
+
+data:
+  redis:
+    mode: single
+    address: 192.168.18.66:6379
+    password: Hiscene2022
+    db: 11
+    autoPrefix: "basic:"
+  database:
+    address: "localhost:23306"
+    username: "root"
+    password: "A123!@#"
+    dbName: "basic_platform"
+    timeout: 5
+
+# micro server列表
+microService:
+  opLog:
+    name :  "op-log.grpc"
+    timeout :  60
+    grpc :  "localhost:8501"
+    isLocal:  true

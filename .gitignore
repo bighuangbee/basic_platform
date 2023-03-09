@@ -1,0 +1,9 @@
+.DS_Store
+.vscode
+.idea
+.vscode
+config/config.dev*
+
+coverage.out
+*.swp
+pb_file_list.txt

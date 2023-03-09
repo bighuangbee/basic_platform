@@ -1,0 +1,398 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "操作日志",
+    "description": "操作日志",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "OperationLog"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/operation-log": {
+      "get": {
+        "summary": "查询操作日志.",
+        "operationId": "OperationLog_ListOperationLog",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListOperationLogReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page.offset",
+            "description": "default 0.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page.limit",
+            "description": "default 10.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page.pageNo",
+            "description": "default 1.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page.pageSize",
+            "description": "default 不分页.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page.orderBy",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page.orderType",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "description": "操作人ID.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "corpId",
+            "description": "企业ID.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "operateStartAt",
+            "description": "操作时间-开始.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "operateEndAt",
+            "description": "操作时间-结束.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "appId",
+            "description": "应用ID.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "operationName",
+            "description": "操作名称.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "description": "状态.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Success",
+                "Failure"
+              ]
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "OperationLog"
+        ]
+      },
+      "post": {
+        "summary": "增加操作日志.",
+        "operationId": "OperationLog_Add",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AddReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AddRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OperationLog"
+        ]
+      }
+    },
+    "/api/v1/operation-log/user": {
+      "get": {
+        "summary": "操作日志操作人搜索.",
+        "operationId": "OperationLog_ListOperationLogUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListOperationLogUserReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "OperationLog"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ListOperationLogUserReplyUser": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "userName": {
+          "type": "string"
+        }
+      }
+    },
+    "LogLogStatus": {
+      "type": "string",
+      "enum": [
+        "Success",
+        "Failure"
+      ],
+      "default": "Success"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AddReply": {
+      "type": "object"
+    },
+    "v1AddRequest": {
+      "type": "object",
+      "properties": {
+        "log": {
+          "$ref": "#/definitions/v1Log"
+        }
+      }
+    },
+    "v1ListOperationLogReply": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Log"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1ListOperationLogUserReply": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListOperationLogUserReplyUser"
+          }
+        }
+      }
+    },
+    "v1Log": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "appId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "corpId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "corpName": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "operationName": {
+          "type": "string",
+          "description": "操作名称."
+        },
+        "operationType": {
+          "type": "integer",
+          "format": "int32",
+          "description": "操作类型."
+        },
+        "operationModule": {
+          "type": "string",
+          "description": "操作的模块."
+        },
+        "detail": {
+          "type": "string",
+          "description": "自定义详细内容."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "操作时间."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "数据库创建时间."
+        },
+        "status": {
+          "type": "integer",
+          "format": "int32",
+          "description": "状态."
+        },
+        "reason": {
+          "type": "string",
+          "description": "请求失败原因."
+        }
+      }
+    },
+    "v1PageArg": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "format": "int32",
+          "title": "default 0"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32",
+          "title": "default 10"
+        },
+        "pageNo": {
+          "type": "integer",
+          "format": "int32",
+          "title": "default 1"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "default 不分页"
+        },
+        "orderBy": {
+          "type": "string"
+        },
+        "orderType": {
+          "type": "string"
+        }
+      },
+      "title": "PageArg 分页参数"
+    }
+  }
+}
