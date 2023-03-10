@@ -1,0 +1,121 @@
+syntax = "proto3";
+
+package api.user.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/descriptor.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/bighuangbee/basic-platform/api/user/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.user.v1";
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+	info : {
+		title : "账号服务",
+		version : "1",
+		description : "账号服务",
+		contact : {name : "bigbuangbee" email : "bigbuangbee@qq.com"}
+	}
+	host : "",
+	security_definitions: {
+		security: {
+		key: "ApiKeyAuth";
+		value: {
+			type: TYPE_API_KEY;
+			in: IN_HEADER;
+			name: "token";
+		}
+		}
+	},
+	responses: {
+		key: "403";
+		value: {
+		description: "Returned when the user does not have permission to access the resource.";
+		}
+	}
+};
+
+service User {
+	rpc Test (LoginReq) returns (LoginReply){
+		option (google.api.http) = {
+			get : "/api/v1.0/user/test",
+			opLog:"1,账户-测试一下",
+		};
+	};
+	rpc Login (LoginReq) returns (LoginReply){
+		option (google.api.http) = {
+			post : "/api/v1.0/user/login",
+			body : "*",
+			opLog:"1,用户-登录",
+		  };
+	};
+	rpc Create (CreateUserRequest) returns (CreateUserReply){
+		option (google.api.http) = {
+			post : "/api/v1.0/user",
+			body : "*",
+			opLog:"1,用户-创建",
+		};
+	};
+	rpc Update (UpdateUserRequest) returns (CreateUserReply){
+		option (google.api.http) = {
+			put : "/api/v1.0/user/{id}",
+			body : "*",
+			opLog:"1,用户-更新",
+		};
+	};
+
+}
+
+
+message CreateUserRequest {
+	option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+		json_schema : {required : ["account", "password"]}
+	};
+
+	// 账号.
+	string account = 1 [(validate.rules).string = {min_len : 1, max_len : 30}];
+	// 密码.
+	string password = 2 [(validate.rules).string = {max_len : 30}];
+	// 用户名.
+	string username = 3 [(validate.rules).string = {ignore_empty : true, min_len : 1, max_len : 30}];
+	// 手机号码
+	string mobile = 4 [(validate.rules).string = {ignore_empty : true, min_len : 6, max_len : 20}];
+	// 邮箱.
+	string email = 5 [(validate.rules).string = {ignore_empty : true, email : true}];
+	// 来源.
+	string source = 6;
+}
+
+message UpdateUserRequest {
+	int64 id = 7;
+	// 账号.
+	string account = 1 [(validate.rules).string = {min_len : 1, max_len : 30}];
+	// 密码.
+	string password = 2 [(validate.rules).string = {max_len : 30}];
+	// 用户名.
+	google.protobuf.StringValue username = 3 [(validate.rules).string = {ignore_empty : true, min_len : 1, max_len : 30}];
+	// 手机号码
+	google.protobuf.StringValue mobile = 4 [(validate.rules).string = {ignore_empty : true, min_len : 6, max_len : 20}];
+	// 邮箱.
+	string email = 5 [(validate.rules).string = {ignore_empty : true, email : true}];
+	// 来源.
+	string source = 6;
+	google.protobuf.Int32Value age = 11;
+}
+
+message CreateUserReply {
+	int64 userId = 1;
+}
+
+message LoginReq{
+	string username = 1;
+}
+
+message LoginReply{
+	int64 userId = 1;
+}
+

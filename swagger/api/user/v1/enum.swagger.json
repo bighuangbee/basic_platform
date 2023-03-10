@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "api/account/v1/errors.proto",
+    "title": "api/user/v1/enum.proto",
     "version": "version not set"
   },
   "consumes": [

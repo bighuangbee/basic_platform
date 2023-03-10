@@ -4,9 +4,9 @@ import (
 	"context"
 	"github.com/bighuangbee/basic-platform/internal/conf"
 	"github.com/bighuangbee/gokit/storage/kitGorm"
-	"github.com/bighuangbee/gokit/storage/kitRedis"
 	"github.com/bighuangbee/gokit/tools/id"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 )
 
@@ -17,7 +17,7 @@ var (
 type Data struct {
 	dbInfo      *conf.Database
 	db          *gorm.DB
-	rdb         kitRedis.Client
+	rdb         *redis.Client
 	id 			id.Generater
 }
 
@@ -70,8 +70,9 @@ func (d *Data) DB(ctx context.Context) *gorm.DB {
 	return d.db.WithContext(ctx)
 }
 
-func (d *Data) Redis(prefix string) *kitRedis.MyRedis {
-	return &kitRedis.MyRedis{Prefix: defaultRedisPrefix + prefix, Rdb: d.rdb}
+func (d *Data) Redis(prefix string) *redis.Client {
+	return d.rdb
+	//return &redis.Client{Prefix: defaultRedisPrefix + prefix, Rdb: d.rdb}
 }
 
 func (d *Data) Id() id.Generater {

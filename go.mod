@@ -3,13 +3,13 @@ module github.com/bighuangbee/basic-platform
 go 1.17
 
 require (
-	github.com/bighuangbee/gokit v0.0.0-20230309063957-58831640e935
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/bighuangbee/gokit v0.0.0-20230310145801-a510f2d82e16
 	github.com/emicklei/proto v1.11.1
 	github.com/envoyproxy/protoc-gen-validate v0.6.1
 	github.com/go-kratos/kratos/contrib/registry/etcd/v2 v2.0.0-20230227131608-c65f823c38de
 	github.com/go-kratos/kratos/v2 v2.5.3
 	github.com/go-kratos/swagger-api v1.0.1
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/google/wire v0.5.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.5.0
 	go.etcd.io/etcd/client/v3 v3.5.7
@@ -34,7 +34,6 @@ require (
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.2.0 // indirect
-	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.0.0 // indirect
@@ -49,6 +48,7 @@ require (
 	github.com/lestrrat/go-file-rotatelogs v0.0.0-20180223000712-d3151e2a480f // indirect
 	github.com/lestrrat/go-strftime v0.0.0-20180220042222-ba3bf9c1d042 // indirect
 	github.com/nicksnyder/go-i18n/v2 v2.2.1 // indirect
+	github.com/petersunbag/coven v1.0.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rakyll/statik v0.1.7 // indirect
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5 // indirect
