@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/bighuangbee/basic-platform/internal/conf"
 	"github.com/bighuangbee/gokit/storage/kitGorm"
+	"github.com/bighuangbee/gokit/storage/kitRedis"
 	"github.com/bighuangbee/gokit/tools/id"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/v8"
@@ -38,26 +39,24 @@ func NewData(bc *conf.Bootstrap, logger log.Logger) (*Data, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	logger.Log(log.LevelDebug, "db connect:", c.Database.Address, ",driver:", c.Database.Driver)
+	logger.Log(log.LevelDebug, "DB connect:", c.Database.Address, ",driver:", c.Database.Driver)
 
 	sfId, err := id.New(bc.Server.NodeId)
 	if err != nil {
 		panic("snowflakeId fail" + err.Error())
 	}
 
-	//rClient, err := kitRedis.New(&kitRedis.Options{
-	//	Addr:     c.Redis.Address,
-	//	Password: c.Redis.Password,
-	//	DB:       int(c.Redis.DB),
-	//})
-	//if err != nil {
-	//	return nil, nil, err
-	//}
+	rClient, err := kitRedis.NewRedis(c.Redis.Address, c.Redis.Password, int(c.Redis.DB), logger)
+	if err != nil {
+		logger.Log(log.LevelError, err)
+		return nil, nil, err
+	}
+	logger.Log(log.LevelDebug, "Redis connect:", c.Redis.Address, "db index:", int(c.Redis.DB))
 
 	d := &Data{
 		dbInfo:      c.Database,
 		db:          db,
-		//rdb:         rClient,
+		rdb:         rClient,
 		id: sfId,
 	}
 

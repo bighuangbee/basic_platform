@@ -7,7 +7,6 @@ import (
 	"github.com/bighuangbee/basic-platform/internal/domain"
 	"github.com/bighuangbee/basic-platform/internal/module/user/service"
 	pbCommon "github.com/bighuangbee/gokit/api/common/v1"
-	"github.com/bighuangbee/gokit/tools"
 	"github.com/bighuangbee/gokit/tools/coper"
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -17,8 +16,6 @@ type UserApp struct {
 	svc *service.UserService
 	log *log.Helper
 }
-
-const cryptoStr = "B10>=F3Z^#!v"
 
 func NewUserApp(svc *service.UserService, logHelper *log.Helper) pb.UserServer {
 	return &UserApp{
@@ -33,7 +30,7 @@ func (s *UserApp) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginReply, 
 		s.log.Error(err)
 		return nil, pbCommon.ErrorInvalidParameter("")
 	}
-	return s.svc.Login(ctx, req)
+	return s.svc.Login(ctx, &user)
 }
 
 func (s *UserApp) Create(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserReply, error) {
@@ -42,16 +39,13 @@ func (s *UserApp) Create(ctx context.Context, req *pb.CreateUserRequest) (*pb.Cr
 		s.log.Error(err)
 		return nil, pbCommon.ErrorInvalidParameter("")
 	}
-	user.Status = 1
-	user.Salt = tools.RandStr(8)
-	user.Password = tools.MD5(tools.RandStr(10)+req.Password+user.Salt+cryptoStr)
 	return s.svc.Create(ctx, &user)
 }
 
 func (s *UserApp) Update(ctx context.Context, req *pb.UpdateUserRequest) (*pb.CreateUserReply, error) {
 	//user := pb.UpdateUserRequest{}
 
-	fmt.Println("---req========", req.Id, req.Username, req.Mobile, req.Mobile == nil)
+	fmt.Println("---req========", req.Id, req.UserName, req.Mobile, req.Mobile == nil)
 	//fmt.Println("---domain.User", user.Id, user.Username, user.Mobile, user.Mobile == nil)
 
 	return s.svc.Update(ctx, req)

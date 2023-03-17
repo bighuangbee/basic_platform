@@ -36,7 +36,7 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r.GET("/api/v1.0/user/test", _User_Test0_HTTP_Handler(srv))
 	r.POST("/api/v1.0/user/login", _User_Login0_HTTP_Handler(srv))
 	r.POST("/api/v1.0/user", _User_Create0_HTTP_Handler(srv))
-	r.PUT("/api/v1.0/user", _User_Update0_HTTP_Handler(srv))
+	r.PUT("/api/v1.0/user/{id}", _User_Update0_HTTP_Handler(srv))
 }
 
 func _User_Test0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -100,6 +100,9 @@ func _User_Update0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error
 	return func(ctx http.Context) error {
 		var in UpdateUserRequest
 		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationUserUpdate)
@@ -171,7 +174,7 @@ func (c *UserHTTPClientImpl) Test(ctx context.Context, in *LoginReq, opts ...htt
 
 func (c *UserHTTPClientImpl) Update(ctx context.Context, in *UpdateUserRequest, opts ...http.CallOption) (*CreateUserReply, error) {
 	var out CreateUserReply
-	pattern := "/api/v1.0/user"
+	pattern := "/api/v1.0/user/{id}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserUpdate))
 	opts = append(opts, http.PathTemplate(pattern))

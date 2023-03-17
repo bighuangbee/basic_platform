@@ -7,6 +7,7 @@ import (
 	pb "github.com/bighuangbee/gokit/api/common/v1"
 	"github.com/bighuangbee/gokit/model"
 	"github.com/bighuangbee/gokit/tools"
+	"github.com/bighuangbee/gokit/userAccess"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/transport"
@@ -14,6 +15,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"net"
 	nhttp "net/http"
+	"strconv"
 	"strings"
 )
 
@@ -66,7 +68,7 @@ func GetPathTemplateMethodIp(transport interface{}) (uri, rawQuery, method, ip s
 	tr := transport.(*http.Transport)
 	req := tr.Request()
 	method = strings.ToUpper(req.Method)
-	uri = tr.Request().URL.Path
+	uri = tr.PathTemplate()
 	rawQuery = tr.Request().URL.RawQuery
 	ip = GetIP(req)
 	return
@@ -89,7 +91,9 @@ func GetIP(r *nhttp.Request) string {
 	return remoteIP.String()
 }
 
-func (r *OpLog) Middleware() middleware.Middleware {
+var accessToken = userAccess.NewToken()
+
+func (r *OpLog) Save() middleware.Middleware {
 
 	return func(handler middleware.Handler) middleware.Handler {
 		return func(ctx context.Context, req interface{}) (reply interface{}, err error) {
@@ -106,43 +110,36 @@ func (r *OpLog) Middleware() middleware.Middleware {
 
 				bs, err := json.Marshal(req)
 				if err != nil {
-					r.Logger.Log(log.LevelError, "NewJwtTokenByParse", err)
+					r.Logger.Log(log.LevelError, "OpLog Save, json.Marshal", err)
 				} else {
 					bodyStr = string(bs)
 				}
 
-				if uri == "/api/v1.0/account/login" {
+				if uri == "/api/v1.0/user/login" {
 					obj := make(map[string]interface{})
 					json.Unmarshal([]byte(bodyStr), &obj)
+
 					if _, ok := obj["password"]; ok {
 						obj["password"] = "***"
-					} else if _, ok := obj["token"]; ok {
-						obj["token"] = "***"
 					}
 					if _, ok := obj["account"]; ok {
 						account = obj["account"].(string)
 					}
-					// 更新body string
-					bs, err := json.Marshal(obj)
-					if err != nil {
-						bodyStr = ""
-					} else {
-						bodyStr = string(bs)
-					}
+					bs, _ := json.Marshal(obj)
+					bodyStr = string(bs)
 				}
 
 				if token := tr.RequestHeader().Get("jwtToken"); token != "" {
-					//jwtToken, err := jwtToken.NewJwtTokenByParse(token, jwtTokenKey)
-					//if err != nil {
-					//	log.NewHelper(t.Logger).Errorw("NewJwtTokenByParse err", err)
-					//} else {
-					//	corpIdInt, _ := strconv.Atoi(jwtToken.Data["corpId"].(string))
-					//	corpId = uint64(corpIdInt)
-					//	userIdF := jwtToken.Data["userId"].(float64)
-					//	userId = uint64(math.Ceil(userIdF))
-					//	userName = jwtToken.Data["userName"].(string)
-					//	account = jwtToken.Data["account"].(string)
-					//}
+					userClaims, err :=  accessToken.Decode(token)
+					if err != nil {
+						r.Logger.Log(log.LevelError,"accessToken.Decode err", err)
+					} else {
+						corpId = uint64(userClaims.CorpId)
+						id, _ := strconv.ParseInt(userClaims.JwtClaims.Id, 10, 64)
+						userId = uint64(id)
+						userName = userClaims.UserName
+						account = userClaims.Account
+					}
 				}
 				userAgent := tr.RequestHeader().Get("User-Agent")
 

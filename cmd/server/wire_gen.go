@@ -33,16 +33,17 @@ func autoWireApp(bootstrap *conf.Bootstrap, logger log.Logger, helper *log.Helpe
 		return nil, nil, err
 	}
 	iUserRepo := repo.NewUserRepo(dataData, helper, bootstrap)
-	userService := service.NewUserService(iUserRepo, logger, bootstrap)
-	accountServer := app.NewUserApp(userService, helper)
+	iUserAccess := service.NewUserAccess(dataData)
+	userService := service.NewUserService(iUserRepo, logger, iUserAccess)
+	userServer := app.NewUserApp(userService, helper)
 	iOperationLogRepo := repo2.NewOperationLogRepo(dataData)
 	operationLogService := service2.NewOperationLogService(iOperationLogRepo, logger)
 	operationLogServer := app2.NewOperationLogApp(operationLogService, logger)
 	pbServer := &protocol.PbServer{
-		Account: accountServer,
+		Account: userServer,
 		OpLog:   operationLogServer,
 	}
-	server := protocol.NewHTTPServer(bootstrap, logger, pbServer, dataData, opLog)
+	server := protocol.NewHTTPServer(bootstrap, logger, pbServer, dataData, opLog, iUserAccess)
 	grpcServer := protocol.NewGRPCServer(bootstrap, logger, pbServer)
 	kratosApp := newApp(bootstrap, logger, server, grpcServer, opLog)
 	return kratosApp, func() {

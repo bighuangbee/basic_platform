@@ -55,40 +55,6 @@
         "tags": [
           "User"
         ]
-      },
-      "put": {
-        "operationId": "User_Update",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1CreateUserReply"
-            }
-          },
-          "403": {
-            "description": "Returned when the user does not have permission to access the resource.",
-            "schema": {}
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1UpdateUserRequest"
-            }
-          }
-        ],
-        "tags": [
-          "User"
-        ]
       }
     },
     "/api/v1.0/user/login": {
@@ -150,10 +116,91 @@
         },
         "parameters": [
           {
-            "name": "username",
+            "name": "account",
+            "description": "账号.",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "password",
+            "description": "密码.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1.0/user/{id}": {
+      "put": {
+        "operationId": "User_Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateUserReply"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "account": {
+                  "type": "string",
+                  "description": "账号."
+                },
+                "password": {
+                  "type": "string",
+                  "description": "密码."
+                },
+                "user_name": {
+                  "type": "string",
+                  "description": "用户名."
+                },
+                "mobile": {
+                  "type": "string",
+                  "title": "手机号码"
+                },
+                "email": {
+                  "type": "string",
+                  "description": "邮箱."
+                },
+                "source": {
+                  "type": "string",
+                  "description": "来源."
+                },
+                "age": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
           }
         ],
         "tags": [
@@ -213,7 +260,7 @@
           "type": "string",
           "description": "密码."
         },
-        "username": {
+        "user_name": {
           "type": "string",
           "description": "用户名."
         },
@@ -241,24 +288,29 @@
         "userId": {
           "type": "string",
           "format": "int64"
+        },
+        "account": {
+          "type": "string",
+          "description": "账号."
+        },
+        "user_name": {
+          "type": "string",
+          "description": "用户名."
+        },
+        "token": {
+          "type": "string",
+          "title": "登录凭证"
+        },
+        "expiredAt": {
+          "type": "integer",
+          "format": "int32",
+          "title": "登录有效时间"
         }
       }
     },
     "v1LoginReq": {
       "type": "object",
       "properties": {
-        "username": {
-          "type": "string"
-        }
-      }
-    },
-    "v1UpdateUserRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "int64"
-        },
         "account": {
           "type": "string",
           "description": "账号."
@@ -266,26 +318,6 @@
         "password": {
           "type": "string",
           "description": "密码."
-        },
-        "username": {
-          "type": "string",
-          "description": "用户名."
-        },
-        "mobile": {
-          "type": "string",
-          "title": "手机号码"
-        },
-        "email": {
-          "type": "string",
-          "description": "邮箱."
-        },
-        "source": {
-          "type": "string",
-          "description": "来源."
-        },
-        "age": {
-          "type": "integer",
-          "format": "int32"
         }
       }
     }

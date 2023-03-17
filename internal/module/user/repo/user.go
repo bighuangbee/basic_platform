@@ -8,6 +8,7 @@ import (
 	"github.com/bighuangbee/basic-platform/internal/data"
 	"github.com/bighuangbee/basic-platform/internal/domain"
 	"github.com/bighuangbee/gokit/tools"
+	"github.com/bighuangbee/gokit/userAccess"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
 )
@@ -27,17 +28,21 @@ type UserRepo struct {
 	bc     *conf.Bootstrap
 }
 
-func (this *UserRepo) Login(context.Context, *domain.User)  (*domain.User, error) {
-	return &domain.User{}, nil
+func (this *UserRepo) Get(ctx context.Context, account string)  (user *domain.User, err error) {
+	user = &domain.User{}
+	err = this.data.DB(ctx).Where("account=?",account).Where("status=1").First(&user).Error
+	return
 }
 
 func (this *UserRepo) Create(ctx context.Context, data *domain.User) (error) {
+	data.CreatedBy = uint64(userAccess.GetUserId(ctx))
 	return this.data.DB(ctx).Create(&data).Error
 }
 
 
 func (this *UserRepo) Update(ctx context.Context, data *v1.UpdateUserRequest) (error) {
-	updateMap := tools.PbToUpdateMap(data, &domain.User{}, 0)
+
+	updateMap := tools.PbToUpdateMap(data, &domain.User{}, userAccess.GetUserId(ctx))
 	fmt.Println("==updateMap",updateMap )
 	return this.data.DB(ctx).Transaction(func(tx *gorm.DB) error {
 		user := domain.User{}

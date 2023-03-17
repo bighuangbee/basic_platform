@@ -48,18 +48,18 @@ func (m *CreateUserRequest) Validate() error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetPassword()) > 30 {
+	if utf8.RuneCountInString(m.GetPassword()) > 32 {
 		return CreateUserRequestValidationError{
 			field:  "Password",
-			reason: "value length must be at most 30 runes",
+			reason: "value length must be at most 32 runes",
 		}
 	}
 
-	if m.GetUsername() != "" {
+	if m.GetUserName() != "" {
 
-		if l := utf8.RuneCountInString(m.GetUsername()); l < 1 || l > 30 {
+		if l := utf8.RuneCountInString(m.GetUserName()); l < 1 || l > 30 {
 			return CreateUserRequestValidationError{
-				field:  "Username",
+				field:  "UserName",
 				reason: "value length must be between 1 and 30 runes, inclusive",
 			}
 		}
@@ -217,20 +217,20 @@ func (m *UpdateUserRequest) Validate() error {
 		}
 	}
 
-	if utf8.RuneCountInString(m.GetPassword()) > 30 {
+	if utf8.RuneCountInString(m.GetPassword()) > 32 {
 		return UpdateUserRequestValidationError{
 			field:  "Password",
-			reason: "value length must be at most 30 runes",
+			reason: "value length must be at most 32 runes",
 		}
 	}
 
-	if wrapper := m.GetUsername(); wrapper != nil {
+	if wrapper := m.GetUserName(); wrapper != nil {
 
 		if wrapper.GetValue() != "" {
 
 			if l := utf8.RuneCountInString(wrapper.GetValue()); l < 1 || l > 30 {
 				return UpdateUserRequestValidationError{
-					field:  "Username",
+					field:  "UserName",
 					reason: "value length must be between 1 and 30 runes, inclusive",
 				}
 			}
@@ -461,7 +461,19 @@ func (m *LoginReq) Validate() error {
 		return nil
 	}
 
-	// no validation rules for Username
+	if l := utf8.RuneCountInString(m.GetAccount()); l < 1 || l > 30 {
+		return LoginReqValidationError{
+			field:  "Account",
+			reason: "value length must be between 1 and 30 runes, inclusive",
+		}
+	}
+
+	if utf8.RuneCountInString(m.GetPassword()) > 32 {
+		return LoginReqValidationError{
+			field:  "Password",
+			reason: "value length must be at most 32 runes",
+		}
+	}
 
 	return nil
 }
@@ -528,6 +540,14 @@ func (m *LoginReply) Validate() error {
 	}
 
 	// no validation rules for UserId
+
+	// no validation rules for Account
+
+	// no validation rules for UserName
+
+	// no validation rules for Token
+
+	// no validation rules for ExpiredAt
 
 	return nil
 }

@@ -3,7 +3,7 @@ module github.com/bighuangbee/basic-platform
 go 1.17
 
 require (
-	github.com/bighuangbee/gokit v0.0.0-20230310145801-a510f2d82e16
+	github.com/bighuangbee/gokit v0.0.0-20230317034816-04dd49002a38
 	github.com/emicklei/proto v1.11.1
 	github.com/envoyproxy/protoc-gen-validate v0.6.1
 	github.com/go-kratos/kratos/contrib/registry/etcd/v2 v2.0.0-20230227131608-c65f823c38de
@@ -26,6 +26,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/coreos/go-semver v0.3.1 // indirect
 	github.com/coreos/go-systemd/v22 v22.5.0 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect

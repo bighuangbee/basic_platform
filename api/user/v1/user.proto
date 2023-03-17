@@ -79,9 +79,9 @@ message CreateUserRequest {
 	// 账号.
 	string account = 1 [(validate.rules).string = {min_len : 1, max_len : 30}];
 	// 密码.
-	string password = 2 [(validate.rules).string = {max_len : 30}];
+	string password = 2 [(validate.rules).string = {max_len : 32}];
 	// 用户名.
-	string username = 3 [(validate.rules).string = {ignore_empty : true, min_len : 1, max_len : 30}];
+	string user_name = 3 [(validate.rules).string = {ignore_empty : true, min_len : 1, max_len : 30}];
 	// 手机号码
 	string mobile = 4 [(validate.rules).string = {ignore_empty : true, min_len : 6, max_len : 20}];
 	// 邮箱.
@@ -95,9 +95,9 @@ message UpdateUserRequest {
 	// 账号.
 	string account = 1 [(validate.rules).string = {min_len : 1, max_len : 30}];
 	// 密码.
-	string password = 2 [(validate.rules).string = {max_len : 30}];
+	string password = 2 [(validate.rules).string = {max_len : 32}];
 	// 用户名.
-	google.protobuf.StringValue username = 3 [(validate.rules).string = {ignore_empty : true, min_len : 1, max_len : 30}];
+	google.protobuf.StringValue user_name = 3 [(validate.rules).string = {ignore_empty : true, min_len : 1, max_len : 30}];
 	// 手机号码
 	google.protobuf.StringValue mobile = 4 [(validate.rules).string = {ignore_empty : true, min_len : 6, max_len : 20}];
 	// 邮箱.
@@ -112,10 +112,21 @@ message CreateUserReply {
 }
 
 message LoginReq{
-	string username = 1;
+	// 账号.
+	string account = 1 [(validate.rules).string = {min_len : 1, max_len : 30}];
+	// 密码.
+	string password = 2 [(validate.rules).string = {max_len : 32}];
 }
 
 message LoginReply{
 	int64 userId = 1;
+	// 账号.
+	string account = 2;
+	// 用户名.
+	string user_name = 3;
+	// 登录凭证
+	string token = 6;
+	// 登录有效时间
+	int32 expiredAt = 7;
 }
 

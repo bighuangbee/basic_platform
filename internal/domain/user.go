@@ -7,7 +7,7 @@ import (
 )
 
 type IUserRepo interface {
-	Login(context.Context, *User) (*User, error)
+	Get(ctx context.Context, account string) (*User, error)
 	Create(context.Context, *User) (error)
 	Update(context.Context, *v1.UpdateUserRequest) (error)
 }
